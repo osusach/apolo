@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { nuevaNota } from '$lib';
-	nuevaNota.valor;
+	import Header from '$lib/Header.svelte';
 </script>
 
+<Header />
 LANDING PAGE!!!
