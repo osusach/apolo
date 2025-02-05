@@ -38,7 +38,7 @@ export const load: PageServerLoad = async () => {
 
 	const pruebas = await db.query.pruebasTable.findMany({
 		with: { items: { with: { preguntas: true } } }
-	});
+	}) as Prueba[];
 
 	return { pruebas };
 };
