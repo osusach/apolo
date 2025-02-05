@@ -30,6 +30,7 @@ export const pruebasRelations = relations(pruebasTable, ({ many }) => ({
 export const itemsTable = sqliteTable('items', {
 	id: integer().primaryKey({ autoIncrement: true }),
 	nombre: text().notNull(),
+	tipo: text().notNull(),
 	pruebaId: integer('prueba_id')
 		.notNull()
 		.references(() => pruebasTable.id, { onDelete: 'cascade' })
@@ -44,15 +45,23 @@ export const preguntasTable = sqliteTable('preguntas', {
 	id: integer().primaryKey({ autoIncrement: true }),
 	itemId: integer('item_id')
 		.notNull()
-		.references(() => itemsTable.id, { onDelete: 'cascade' })
+		.references(() => itemsTable.id, { onDelete: 'cascade' }),
+	contenido: text({ mode: 'json' }).$type<TipoPreguntaGenerico>().notNull(),
+	tipo: text().$type<stringTipoPregunta>().notNull()
 });
 
 export const preguntasRelations = relations(preguntasTable, ({ one }) => ({
 	items: one(itemsTable, { fields: [preguntasTable.itemId], references: [itemsTable.id] })
 }));
 
-export type User = typeof userTable.$inferSelect;
-export type Session = typeof sessionTable.$inferSelect;
-export type Prueba = typeof pruebasTable.$inferSelect;
-export type Items = typeof itemsTable.$inferSelect;
-export type Preguntas = typeof preguntasTable.$inferSelect;
+export type UserModel = Omit<typeof userTable.$inferSelect, 'id'>;
+export type SessionModel = Omit<typeof sessionTable.$inferSelect, 'id'>;
+export type PruebaModel = Omit<typeof pruebasTable.$inferSelect, 'id'>;
+export type ItemModel = Omit<typeof itemsTable.$inferSelect, 'id'>;
+export type PreguntaModel = Omit<typeof preguntasTable.$inferSelect, 'id' | 'itemId'>;
+
+export type Item = { preguntas: PreguntaModel[] } & Omit<ItemModel, 'pruebaId'>;
+export type Prueba = { items: Item[] } & PruebaModel;
+
+export type TipoPreguntaGenerico = Multiple | Abierta;
+export type stringTipoPregunta = 'Multiple' | 'Abierta';

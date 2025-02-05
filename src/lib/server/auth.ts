@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { db } from '$lib/server/db';
-import { userTable, sessionTable, type Session, type User } from '$lib/server/db/schema';
+import { userTable, sessionTable, type SessionModel, type UserModel } from '$lib/server/db/schema';
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
@@ -20,7 +20,7 @@ export function generateSessionToken() {
 
 export async function createSession(token: string, userId: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const session: Session = {
+	const session: SessionModel = {
 		id: sessionId,
 		userId,
 		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
@@ -61,7 +61,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 }
 
 export type SessionValidationResult =
-	| { session: Session; user: User }
+	| { session: SessionModel; user: UserModel }
 	| { session: null; user: null };
 
 export async function invalidateSession(sessionId: string) {
