@@ -63,5 +63,5 @@ export type PreguntaModel = Omit<typeof preguntasTable.$inferSelect, 'id' | 'ite
 export type Item = { preguntas: PreguntaModel[] } & Omit<ItemModel, 'pruebaId'>;
 export type Prueba = { items: Item[] } & PruebaModel;
 
-export type TipoPreguntaGenerico = Multiple | Abierta;
-export type stringTipoPregunta = 'Multiple' | 'Abierta';
+export type TipoPreguntaGenerico = Multiple | Abierta | Booleana | Unica;
+export type stringTipoPregunta = 'Multiple' | 'Abierta' | 'Booleana' | 'Unica';
