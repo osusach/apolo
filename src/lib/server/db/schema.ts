@@ -1,5 +1,6 @@
-import { relations } from 'drizzle-orm';
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
+import type { Item, TipoItem } from '$lib/types';
 
 export const userTable = sqliteTable('user', {
 	id: text().primaryKey(),
@@ -29,39 +30,13 @@ export const pruebasRelations = relations(pruebasTable, ({ many }) => ({
 
 export const itemsTable = sqliteTable('items', {
 	id: integer().primaryKey({ autoIncrement: true }),
-	nombre: text().notNull(),
-	tipo: text().notNull(),
+	tipo: text().$type<TipoItem>().notNull(),
+	contenido: text({ mode: 'json' }).$type<Item>().notNull(),
 	pruebaId: integer('prueba_id')
 		.notNull()
 		.references(() => pruebasTable.id, { onDelete: 'cascade' })
 });
 
-export const itemsRelations = relations(itemsTable, ({ one, many }) => ({
-	pruebas: one(pruebasTable, { fields: [itemsTable.pruebaId], references: [pruebasTable.id] }),
-	preguntas: many(preguntasTable)
+export const itemsRelations = relations(itemsTable, ({ one }) => ({
+	pruebas: one(pruebasTable, { fields: [itemsTable.pruebaId], references: [pruebasTable.id] })
 }));
-
-export const preguntasTable = sqliteTable('preguntas', {
-	id: integer().primaryKey({ autoIncrement: true }),
-	itemId: integer('item_id')
-		.notNull()
-		.references(() => itemsTable.id, { onDelete: 'cascade' }),
-	contenido: text({ mode: 'json' }).$type<TipoPreguntaGenerico>().notNull(),
-	tipo: text().$type<stringTipoPregunta>().notNull()
-});
-
-export const preguntasRelations = relations(preguntasTable, ({ one }) => ({
-	items: one(itemsTable, { fields: [preguntasTable.itemId], references: [itemsTable.id] })
-}));
-
-export type UserModel = typeof userTable.$inferSelect;
-export type SessionModel = typeof sessionTable.$inferSelect;
-export type PruebaModel = Omit<typeof pruebasTable.$inferSelect, 'id'>;
-export type ItemModel = Omit<typeof itemsTable.$inferSelect, 'id'>;
-export type PreguntaModel = Omit<typeof preguntasTable.$inferSelect, 'id' | 'itemId'>;
-
-export type Item = { preguntas: PreguntaModel[] } & Omit<ItemModel, 'pruebaId'>;
-export type Prueba = { items: Item[] } & PruebaModel;
-
-export type TipoPreguntaGenerico = Multiple | Abierta | Booleana | Unica;
-export type stringTipoPregunta = 'Multiple' | 'Abierta' | 'Booleana' | 'Unica';

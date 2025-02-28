@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
-import { pruebasTable, type Prueba } from '$lib/server/db/schema';
+import { pruebasTable } from '$lib/server/db/schema';
 import { savePrueba } from '$lib/server/repositories/pruebas';
+import type { Abierta, Multiple, Pregunta, Prueba } from '$lib/types';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -12,10 +13,16 @@ export const load: PageServerLoad = async () => {
 	await db.delete(pruebasTable);
 
 	const pregunta_multiple: Multiple = {
-		pregunta: 'Esta pregunta es multiple?',
-		valores: ['si', 'no', 'a veces']
+		texto: 'Esta pregunta es multiple?',
+		opciones: ['si', 'no', 'a veces'],
+		alternativas: ['', '', ''],
+		tipo: 'multiple'
 	};
-	const pregunta_abierta: Abierta = { pregunta: 'Esta pregunta es abierta?', tamaño: 'chico' };
+	const pregunta_abierta: Abierta = {
+		texto: 'Esta pregunta es abierta?',
+		tamaño: 'chico',
+		tipo: 'abierta'
+	};
 
 	const prueba: Prueba = {
 		nombre: 'Prueba 1',
@@ -23,22 +30,20 @@ export const load: PageServerLoad = async () => {
 		items: [
 			{
 				nombre: 'item 1',
-				preguntas: [{ tipo: 'Multiple', contenido: pregunta_multiple }],
-				tipo: 'Multiple'
+				preguntas: [pregunta_multiple],
+				tipo: 'multiple'
 			},
 			{
 				nombre: 'item 2',
-				preguntas: [{ tipo: 'Abierta', contenido: pregunta_abierta }],
-				tipo: 'Abierta'
+				preguntas: [pregunta_abierta],
+				tipo: 'abierta'
 			}
 		]
 	};
-
 	await savePrueba(prueba);
-
 	const pruebas = await db.query.pruebasTable.findMany({
 		with: { items: { with: { preguntas: true } } }
-	}) as Prueba[];
+	});
 
 	return { pruebas };
 };

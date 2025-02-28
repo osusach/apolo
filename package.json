@@ -49,6 +49,7 @@
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"daisyui": "^4.12.23",
-		"drizzle-orm": "^0.38.4"
+		"drizzle-orm": "^0.38.4",
+		"pdf-lib": "^1.17.1"
 	}
 }
