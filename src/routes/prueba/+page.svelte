@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { nuevaMultiple, nuevoTitulo, section_style } from '$lib';
 	import ComponenteItem from '$lib/ComponenteItem.svelte';
-	import PreguntaMultiple from '$lib/PreguntaMultiple.svelte';
-	import { prueba, focusedIndex } from '$lib/stores.svelte';
+	import { prueba } from '$lib/stores.svelte';
 	// let focusedIndex = $state(0);
 	// Se definen las variables reactivas
 
@@ -86,6 +85,8 @@
 			alert('Error al guardar la prueba');
 		}
 	};
+
+	$inspect(prueba);
 </script>
 
 <div class="flex flex-row justify-center gap-x-8 p-4">
@@ -106,19 +107,17 @@
 	</main>
 
 	<!-- Sidebar -->
-	<div class={'grid grid-flow-row ' + section_style}>
+	<div class={'grid h-fit grid-flow-row gap-1 ' + section_style}>
 		<button
+			class="bg-blue-300 p-1"
 			onclick={() => {
-				prueba.insertAt({
-					...nuevoTitulo,
-					texto: nuevoTitulo.texto + ' ' + (prueba.contenido.length + 1),
-					indice: 0
-				});
+				prueba.insertTitle();
 			}}>Crear Item</button
 		>
 		<button
+			class="bg-blue-300 p-1"
 			onclick={() => {
-				prueba.insertAt(nuevaMultiple);
+				prueba.insertItem();
 			}}>Agregar pregunta abajo</button
 		>
 		<button>Cosas 3</button>

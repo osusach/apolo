@@ -4,8 +4,8 @@
 	import ComponenteTitulo from './ComponenteTitulo.svelte';
 	import type { ItemInput } from './types';
 	import { focusedIndex } from './stores.svelte';
-	import { get } from 'svelte/store';
 	import { section_style } from '$lib';
+	import PreguntaHeader from './PreguntaHeader.svelte';
 
 	const { item, item_idx, display_idx }: ItemInput = $props();
 </script>
@@ -15,16 +15,16 @@
 <div
 	class={(item_idx == $focusedIndex ? 'bg-green-100 ' : ' ') + section_style}
 	onclick={() => {
-		console.log('a');
 		focusedIndex.set(item_idx);
-		console.log(get(focusedIndex));
 	}}
 >
 	{#if item.tipo == 'titulo'}
 		<ComponenteTitulo {item} {item_idx} {display_idx}></ComponenteTitulo>
 	{:else if item.tipo == 'multiple'}
+		<PreguntaHeader {item} {item_idx} {display_idx}></PreguntaHeader>
 		<PreguntaMultiple {item} {item_idx} {display_idx}></PreguntaMultiple>
 	{:else if item.tipo == 'unica'}
+		<PreguntaHeader {item} {item_idx} {display_idx}></PreguntaHeader>
 		<PreguntaUnica {item} {item_idx} {display_idx}></PreguntaUnica>
 	{:else}
 		<p>Tipo de pregunta no soportado.</p>

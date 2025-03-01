@@ -5,5 +5,4 @@
 	let { item, item_idx, display_idx }: ItemInput = $props();
 </script>
 
-<PreguntaHeader {item} {display_idx}></PreguntaHeader>
-<p>multiple {item_idx} {item.texto} {item.tipo}</p>
+<p>multiple</p>
