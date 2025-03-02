@@ -1,4 +1,4 @@
-import type { Prueba } from '$lib/server/db/schema';
+import type { Item, Prueba, Unica } from '$lib/types';
 import { PageSizes, PDFDocument, PDFPage, StandardFonts } from 'pdf-lib';
 
 let current_x = 0;
@@ -15,11 +15,16 @@ const fontToEmbed = StandardFonts.Courier;
 const pageSize = PageSizes.A4;
 const debug = true;
 
-const debugDivider = () => {
+function debugDivider() {
 	if (!debug) return 0;
 	page.drawLine({ start: { x: 0, y: current_y }, end: { x: width, y: current_y }, thickness: 1 });
 	return 10;
-};
+}
+
+function drawUnica(unica: Unica, idx: number) {
+	page.drawText(idx.toString());
+	page.drawText(unica.texto);
+}
 
 export const generate_pdf = async (prueba: Prueba) => {
 	const pdfDoc = await PDFDocument.create();
@@ -37,6 +42,12 @@ export const generate_pdf = async (prueba: Prueba) => {
 		y: current_y,
 		font: font,
 		size: fontSize
+	});
+
+	prueba.contenido.forEach((item: Item, idx: number) => {
+		if (item.tipo == 'unica') {
+			drawUnica(item, idx);
+		}
 	});
 
 	current_y -= verticalGap;

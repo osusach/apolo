@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { nuevaMultiple, nuevoTitulo, section_style } from '$lib';
 	import ComponenteItem from '$lib/ComponenteItem.svelte';
+	import { generate_pdf } from '$lib/pdf/main';
 	import { prueba } from '$lib/stores.svelte';
+	import { onMount } from 'svelte';
+
 	// let focusedIndex = $state(0);
 	// Se definen las variables reactivas
 
@@ -85,8 +88,6 @@
 			alert('Error al guardar la prueba');
 		}
 	};
-
-	$inspect(prueba);
 </script>
 
 <div class="flex flex-row justify-center gap-x-8 p-4">
@@ -107,7 +108,7 @@
 	</main>
 
 	<!-- Sidebar -->
-	<div class={'grid h-fit grid-flow-row gap-1 ' + section_style}>
+	<div class={'sticky top-4 grid h-fit grid-flow-row gap-1 ' + section_style}>
 		<button
 			class="bg-blue-300 p-1"
 			onclick={() => {
@@ -120,7 +121,12 @@
 				prueba.insertItem();
 			}}>Agregar pregunta abajo</button
 		>
-		<button>Cosas 3</button>
+		<button
+			onclick={async () => {
+				let url = await generate_pdf(prueba.get());
+				window.open(url);
+			}}>Crear PDF</button
+		>
 		<button>Cosas 4</button>
 	</div>
 </div>

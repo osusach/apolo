@@ -2,6 +2,10 @@ import type { Abierta, Booleana, Item, Multiple, TipoItem, Titulo, Unica } from 
 
 // Crear un array con el abecedario
 export const abecedario = 'abcdefghijklmnopqrstuvwxyz'.split('');
+export const numerosRomanos = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+
+export const textoNuevaOpcion = 'nueva opción';
+export const textoNuevaAlternativa = 'nueva alternativa';
 
 export const nuevoTitulo: Titulo = {
 	indice: 1,
