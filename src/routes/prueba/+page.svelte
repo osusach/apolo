@@ -3,77 +3,9 @@
 	import ComponenteItem from '$lib/ComponenteItem.svelte';
 	import { generate_pdf } from '$lib/pdf/main';
 	import { prueba } from '$lib/stores.svelte';
-	import { onMount } from 'svelte';
 
-	// let focusedIndex = $state(0);
-	// Se definen las variables reactivas
-
-	// Agregar una pregunta
-	/* const addPregunta = (itemIndex: number, tipo?: Pregunta) => {
-		const item = items[itemIndex];
-
-		let tipoPregunta: Pregunta = item.tipo === 'fijo' ? item.tipoFijo! : tipo!;
-
-		let nuevaPregunta: Pregunta;
-
-		console.log(tipoPregunta);
-
-		if (tipoPregunta === 'multiple') {
-			nuevaPregunta = {
-				tipo: 'seleccion_multiple',
-				texto: '',
-				opciones: ['', '', ''],
-				alternativas: ['', '', '', '']
-			};
-		} else if (tipoPregunta === 'seleccion_unica') {
-			nuevaPregunta = { tipo: 'seleccion_unica', texto: '', alternativas: ['', '', '', ''] };
-		} else if (tipoPregunta === 'booleana') {
-			nuevaPregunta = { tipo: 'booleana', texto: '', alternativas: ['Verdadero', 'Falso'] };
-		} else {
-			//if (tipoPregunta === 'abierta')
-			nuevaPregunta = { tipo: 'abierta', texto: '', tamaño: 'chico' };
-		}
-
-		item.preguntas.push(nuevaPregunta);
-	}; 
-
-	// Eliminar una pregunta
-	const removePregunta = (itemIndex: number, preguntaIndex: number) => {
-		items[itemIndex].preguntas.splice(preguntaIndex, 1);
-	};
-
-	// Eliminar una opción
-	const removeOpcion = (itemIndex: number, preguntaIndex: number, opcionIndex: number) => {
-		let pregunta = items[itemIndex].preguntas[preguntaIndex];
-		if (pregunta.tipo === 'seleccion_multiple') {
-			let multiple = pregunta as PreguntaMultiple;
-			multiple.opciones.splice(opcionIndex, 1);
-		}
-	};
-
-	// Eliminar una alternativa
-	const removeAlternativa = (
-		itemIndex: number,
-		preguntaIndex: number,
-		alternativaIndex: number
-	) => {
-		let pregunta = items[itemIndex].preguntas[preguntaIndex];
-		if (
-			pregunta.tipo === 'seleccion_unica' ||
-			pregunta.tipo === 'seleccion_multiple' ||
-			pregunta.tipo === 'booleana'
-		) {
-			let p_c_alternativa = pregunta as PreguntaUnica | PreguntaMultiple | PreguntaBooleana;
-			p_c_alternativa.alternativas.splice(alternativaIndex, 1);
-		}
-	};
-
-	// Eliminar un ítem
-	const removeItem = (itemIndex: number) => {
-		items.splice(itemIndex, 1);
-	};
-
-*/
+	let url = $state('');
+	let showPreview = $state(false);
 	// Guardar la prueba
 	const savePrueba = async () => {
 		const response = await fetch('/api/prueba', {
@@ -91,6 +23,9 @@
 </script>
 
 <div class="flex flex-row justify-center gap-x-8 p-4">
+	{#if showPreview}
+		<iframe title="preview" src={url} class="sticky top-4 h-[95vh] w-3/4"> </iframe>
+	{/if}
 	<main class="flex w-4/5 max-w-2xl flex-col gap-y-8">
 		<div class={section_style}>
 			<h1 class="mb-4 text-lg font-bold text-gray-700">Nombre de prueba</h1>
@@ -123,8 +58,8 @@
 		>
 		<button
 			onclick={async () => {
-				let url = await generate_pdf(prueba.get());
-				window.open(url);
+				url = await generate_pdf(prueba.get());
+				showPreview = true;
 			}}>Crear PDF</button
 		>
 		<button>Cosas 4</button>
